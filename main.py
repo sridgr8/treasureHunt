@@ -97,6 +97,32 @@ def move_Down():
     time.sleep(1)
     driver.find_element(By.XPATH, "//div/a/i[text()='arrow_downward']").click()
 
+def pageSix():
+    time.sleep(3)
+    driver.find_element(By.XPATH, "//*[@id='OpenLayers_Layer_WMS_4']/img[2]").click()
+    time.sleep(8)
+    # driver.execute_script("document.getElementById('OpenLayers_Layer_WMS_4').value='i'")
+    actions = ActionChains(driver)
+    actions.send_keys('i')
+    actions.perform()
+    time.sleep(3)
+    for _ in range(37):move_pointer_right()
+    for _ in range(10):move_pointer_up()
+    driver.find_element(By.XPATH, "//*[@id='mapsChallengeSubmit']").click()
+    time.sleep(10)
+
+
+
+def move_pointer_right():
+    actions = ActionChains(driver)
+    actions.send_keys(Keys.ARROW_RIGHT)
+    actions.perform()
+
+def move_pointer_up():
+    actions = ActionChains(driver)
+    actions.send_keys(Keys.ARROW_UP)
+    actions.perform()
+
 def close_driver():
     time.sleep(2)
     # Close ChromeDriver
@@ -117,6 +143,8 @@ pageThree()
 pageFour()
 
 pageFive()
+
+pageSix()
 
 close_driver()
 print("Execution Completed.")
