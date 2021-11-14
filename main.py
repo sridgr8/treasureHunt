@@ -1,11 +1,16 @@
+from PIL.Image import Image
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 from selenium.webdriver import ActionChains
 import time
+import urllib
 import numpy
+# import pytesseract as tess
+# import PIL from Image
 from time import sleep
 
 maze_List1 = [6,2,2,2,6,2,8,1,6,3,2,2,4,1,2,1,4,3,2,1,4,1,2,2,6,6,8,2,6,1,8,1,6,2]
@@ -82,19 +87,19 @@ def get_Matrix():
 
 
 def move_Left():
-    time.sleep(1)
+    # time.sleep(1)
     driver.find_element(By.XPATH, "//div/a/i[text()='arrow_back']").click()
 
 def move_Right():
-    time.sleep(1)
+    # time.sleep(1)
     driver.find_element(By.XPATH, "//div/a/i[text()='arrow_forward']").click()
 
 def move_Up():
-    time.sleep(1)
+    # time.sleep(1)
     driver.find_element(By.XPATH, "//div/a/i[text()='arrow_upward']").click()
 
 def move_Down():
-    time.sleep(1)
+    # time.sleep(1)
     driver.find_element(By.XPATH, "//div/a/i[text()='arrow_downward']").click()
 
 def pageSix():
@@ -111,8 +116,6 @@ def pageSix():
     driver.find_element(By.XPATH, "//*[@id='mapsChallengeSubmit']").click()
     time.sleep(10)
 
-
-
 def move_pointer_right():
     actions = ActionChains(driver)
     actions.send_keys(Keys.ARROW_RIGHT)
@@ -123,6 +126,40 @@ def move_pointer_up():
     actions.send_keys(Keys.ARROW_UP)
     actions.perform()
 
+def pageSeven():
+    time.sleep(1)
+    #open file in write and binary mode
+    with open('Logo.png', 'wb') as file:
+        #identify image to be captured
+        l = driver.find_element_by_xpath("//*[@id='notABotCaptchaImg']")
+        #write file
+        file.write(l.screenshot_as_png)
+    
+    # img = driver.find_element_by_xpath("//*[@id='notABotCaptchaImg']")
+    # src = img.get_attribute('src')
+    # # download the image
+    # urllib.urlretrieve(src, "captcha.png")
+    # time.sleep(5)
+
+def pageSevenTwo():
+    time.sleep(1)
+    # q = 'captcha();'
+    # print(str(driver.execute_script(q)))
+    val1=""
+    for entry in driver.get_log('browser'):
+        # print (entry)
+        val1=""
+        val1=entry
+    print("Final Value is:")
+    # val2=val1.split("\"")
+    val2=val1["message"].split("\"")[1]
+    # print(val2)
+    driver.find_element(By.XPATH, "//*[@id='notABotCaptchaResponse']").send_keys(val2)
+    time.sleep(1)
+    driver.find_element(By.XPATH, "//*[@id='notABotCaptchaSubmit']").click()
+    time.sleep(5)
+    
+
 def close_driver():
     time.sleep(2)
     # Close ChromeDriver
@@ -130,7 +167,9 @@ def close_driver():
     driver.quit()
 
 print("Execution Started")
-driver = webdriver.Chrome(executable_path="./webDrivers/chromedriver")
+capabilities = DesiredCapabilities.CHROME
+capabilities['goog:loggingPrefs'] = { 'browser':'INFO' }
+driver = webdriver.Chrome(executable_path="./webDrivers/chromedriver", desired_capabilities=capabilities)
 
 startExecution()
 
@@ -145,6 +184,10 @@ pageFour()
 pageFive()
 
 pageSix()
+
+# pageSeven()
+
+pageSevenTwo()
 
 close_driver()
 print("Execution Completed.")
